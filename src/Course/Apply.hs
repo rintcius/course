@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Course.Apply where
 
@@ -10,6 +11,12 @@ import Course.List
 import Course.Optional
 import qualified Prelude as P
 
+
+-- | All instances of the `Apply` type-class must satisfy one law. This law
+-- is not checked by the compiler. This law is given as:
+--
+-- * The law of associative composition
+--   `∀a b c. ((.) <$> a <*> b <*> c) ≅ (a <*> (b <*> c))`
 class Functor f => Apply f where
   -- Pronounced apply.
   (<*>) ::
@@ -24,16 +31,24 @@ infixl 4 <*>
 -- >>> Id (+10) <*> Id 8
 -- Id 18
 instance Apply Id where
+  (<*>) ::
+    Id (a -> b)
+    -> Id a
+    -> Id b
   (<*>) =
-    error "todo"
+    error "todo: Course.Apply (<*>)#instance Id"
 
 -- | Implement @Apply@ instance for @List@.
 --
 -- >>> (+1) :. (*2) :. Nil <*> 1 :. 2 :. 3 :. Nil
 -- [2,3,4,2,4,6]
 instance Apply List where
+  (<*>) ::
+    List (a -> b)
+    -> List a
+    -> List b
   (<*>) =
-    error "todo"
+    error "todo: Course.Apply (<*>)#instance List"
 
 -- | Implement @Apply@ instance for @Optional@.
 --
@@ -46,8 +61,12 @@ instance Apply List where
 -- >>> Full (+8) <*> Empty
 -- Empty
 instance Apply Optional where
+  (<*>) ::
+    Optional (a -> b)
+    -> Optional a
+    -> Optional b
   (<*>) =
-    error "todo"
+    error "todo: Course.Apply (<*>)#instance Optional"
 
 -- | Implement @Apply@ instance for reader.
 --
@@ -66,8 +85,12 @@ instance Apply Optional where
 -- >>> ((*) <*> (+2)) 3
 -- 15
 instance Apply ((->) t) where
+  (<*>) ::
+    ((->) t (a -> b))
+    -> ((->) t a)
+    -> ((->) t b)
   (<*>) =
-    error "todo"
+    error "todo: Course.Apply (<*>)#instance ((->) t)"
 
 -- | Apply a binary function in the environment.
 --
@@ -95,9 +118,9 @@ lift2 ::
   -> f b
   -> f c
 lift2 =
-  error "todo"
+  error "todo: Course.Apply#lift2"
 
--- | Apply a ternary function in the Monad environment.
+-- | Apply a ternary function in the environment.
 --
 -- >>> lift3 (\a b c -> a + b + c) (Id 7) (Id 8) (Id 9)
 -- Id 24
@@ -127,7 +150,7 @@ lift3 ::
   -> f c
   -> f d
 lift3 =
-  error "todo"
+  error "todo: Course.Apply#lift2"
 
 -- | Apply a quaternary function in the environment.
 --
@@ -160,13 +183,19 @@ lift4 ::
   -> f d
   -> f e
 lift4 =
-  error "todo"
+  error "todo: Course.Apply#lift4"
 
 -- | Sequence, discarding the value of the first argument.
 -- Pronounced, right apply.
 --
 -- >>> [1,2,3] *> [4,5,6]
 -- [4,5,6,4,5,6,4,5,6]
+--
+-- >>> [1,2] *> [4,5,6]
+-- [4,5,6,4,5,6]
+--
+-- >>> [1,2,3] *> [4,5]
+-- [4,5,4,5,4,5]
 --
 -- >>> Full 7 *> Full 8
 -- Full 8
@@ -180,13 +209,19 @@ lift4 =
   -> f b
   -> f b
 (*>) =
-  error "todo"
+  error "todo: Course.Apply#(*>)"
 
 -- | Sequence, discarding the value of the second argument.
 -- Pronounced, left apply.
 --
 -- >>> [1,2,3] <* [4,5,6]
 -- [1,1,1,2,2,2,3,3,3]
+--
+-- >>> [1,2] <* [4,5,6]
+-- [1,1,1,2,2,2]
+--
+-- >>> [1,2,3] <* [4,5]
+-- [1,1,2,2,3,3]
 --
 -- >>> Full 7 <* Full 8
 -- Full 7
@@ -200,7 +235,7 @@ lift4 =
   -> f a
   -> f b
 (<*) =
-  error "todo"
+  error "todo: Course.Apply#(<*)"
 
 -----------------------
 -- SUPPORT LIBRARIES --

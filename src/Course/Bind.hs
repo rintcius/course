@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE RebindableSyntax #-}
 
 module Course.Bind(
@@ -17,6 +18,11 @@ import Course.List
 import Course.Optional
 import qualified Prelude as P
 
+-- | All instances of the `Bind` type-class must satisfy one law. This law
+-- is not checked by the compiler. This law is given as:
+--
+-- * The law of associativity
+--   `∀f g x. g =<< (f =<< x) ≅ ((g =<<) . f) =<< x`
 class Apply f => Bind f where
   -- Pronounced, bind.
   (=<<) ::
@@ -63,7 +69,7 @@ infixr 1 =<<
   -> f a
   -> f b
 (<*>) =
-  error "todo"
+  error "todo: Course.Bind#(<*>)"
 
 infixl 4 <*>
 
@@ -72,32 +78,48 @@ infixl 4 <*>
 -- >>> (\x -> Id(x+1)) =<< Id 2
 -- Id 3
 instance Bind Id where
+  (=<<) ::
+    (a -> Id b)
+    -> Id a
+    -> Id b
   (=<<) =
-    error "todo"
+    error "todo: Course.Bind (=<<)#instance Id"
 
 -- | Binds a function on a List.
 --
 -- >>> (\n -> n :. n :. Nil) =<< (1 :. 2 :. 3 :. Nil)
 -- [1,1,2,2,3,3]
 instance Bind List where
+  (=<<) ::
+    (a -> List b)
+    -> List a
+    -> List b
   (=<<) =
-    error "todo"
+    error "todo: Course.Bind (=<<)#instance List"
 
 -- | Binds a function on an Optional.
 --
 -- >>> (\n -> Full (n + n)) =<< Full 7
 -- Full 14
 instance Bind Optional where
+  (=<<) ::
+    (a -> Optional b)
+    -> Optional a
+    -> Optional b
   (=<<) =
-    error "todo"
+    error "todo: Course.Bind (=<<)#instance Optional"
 
 -- | Binds a function on the reader ((->) t).
 --
 -- >>> ((*) =<< (+10)) 7
 -- 119
 instance Bind ((->) t) where
+  (=<<) ::
+    (a -> ((->) t b))
+    -> ((->) t a)
+    -> ((->) t b)
   (=<<) =
-    error "todo"
+    error "todo: Course.Bind (=<<)#instance ((->) t)"
 
 -- | Flattens a combined structure to a single structure.
 --
@@ -117,7 +139,7 @@ join ::
   f (f a)
   -> f a
 join =
-  error "todo"
+  error "todo: Course.Bind#join"
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -131,7 +153,7 @@ join =
   -> (a -> f b)
   -> f b
 (>>=) =
-  error "todo"
+  flip (=<<)
 
 infixl 1 >>=
 
@@ -147,7 +169,7 @@ infixl 1 >>=
   -> a
   -> f c
 (<=<) =
-  error "todo"
+  error "todo: Course.Bind#(<=<)"
 
 infixr 1 <=<
 

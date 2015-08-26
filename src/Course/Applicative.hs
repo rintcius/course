@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE RebindableSyntax #-}
 
 module Course.Applicative(
@@ -18,6 +19,14 @@ import Course.List
 import Course.Optional
 import qualified Prelude as P
 
+-- | All instances of the `Applicative` type-class must satisfy two laws. These
+-- laws are not checked by the compiler. These laws are given as:
+--
+-- * The law of left identity
+--   `∀x. pure id <*> x ≅ x`
+--
+-- * The law of right identity
+--   `∀x. x <*> pure id ≅ x`
 class Apply f => Applicative f where
   pure ::
     a -> f a
@@ -38,35 +47,47 @@ class Apply f => Applicative f where
   -> f a
   -> f b
 (<$>) =
-  error "todo"
+  error "todo: Course.Applicative#(<$>)"
 
 -- | Insert into Id.
 --
 -- prop> pure x == Id x
 instance Applicative Id where
+  pure ::
+    a
+    -> Id a
   pure =
-    error "todo"
+    error "todo: Course.Applicative pure#instance Id"
 
 -- | Insert into a List.
 --
 -- prop> pure x == x :. Nil
 instance Applicative List where
+  pure ::
+    a
+    -> List a
   pure =
-    error "todo"
+    error "todo: Course.Applicative pure#instance List"
 
 -- | Insert into an Optional.
 --
 -- prop> pure x == Full x
 instance Applicative Optional where
+  pure ::
+    a
+    -> Optional a
   pure =
-    error "todo"
+    error "todo: Course.Applicative pure#instance Optional"
 
 -- | Insert into a constant function.
 --
 -- prop> pure x y == x
 instance Applicative ((->) t) where
+  pure ::
+    a
+    -> ((->) t a)
   pure =
-    error "todo"
+    error "todo: Course.Applicative pure#((->) t)"
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -89,7 +110,7 @@ sequence ::
   List (f a)
   -> f (List a)
 sequence =
-  error "todo"
+  error "todo: Course.Applicative#sequence"
 
 -- | Replicate an effect a given number of times.
 --
@@ -113,7 +134,7 @@ replicateA ::
   -> f a
   -> f (List a)
 replicateA =
-  error "todo"
+  error "todo: Course.Applicative#replicateA"
 
 -- | Filter a list with a predicate that produces an effect.
 --
@@ -131,13 +152,17 @@ replicateA =
 --
 -- >>> filtering (>) (4 :. 5 :. 6 :. 7 :. 8 :. 9 :. 10 :. 11 :. 12 :. Nil) 8
 -- [9,10,11,12]
+--
+-- >>> filtering (const $ True :. True :.  Nil) (1 :. 2 :. 3 :. Nil)
+-- [[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3]]
+--
 filtering ::
   Applicative f =>
   (a -> f Bool)
   -> List a
   -> f (List a)
 filtering =
-  error "todo"
+  error "todo: Course.Applicative#filtering"
 
 -----------------------
 -- SUPPORT LIBRARIES --

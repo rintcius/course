@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Course.Functor where
 
@@ -9,6 +10,14 @@ import Course.Optional
 import Course.List
 import qualified Prelude as P
 
+-- | All instances of the `Functor` type-class must satisfy two laws. These laws
+-- are not checked by the compiler. These laws are given as:
+--
+-- * The law of identity
+--   `∀x. (id <$> x) ≅ x`
+--
+-- * The law of composition
+--   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
 class Functor f where
   -- Pronounced, eff-map.
   (<$>) ::
@@ -28,8 +37,12 @@ infixl 4 <$>
 -- >>> (+1) <$> Id 2
 -- Id 3
 instance Functor Id where
+  (<$>) ::
+    (a -> b)
+    -> Id a
+    -> Id b
   (<$>) =
-    error "todo"
+    error "todo: Course.Functor (<$>)#instance Id"
 
 -- | Maps a function on the List functor.
 --
@@ -39,8 +52,12 @@ instance Functor Id where
 -- >>> (+1) <$> (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
 instance Functor List where
+  (<$>) ::
+    (a -> b)
+    -> List a
+    -> List b
   (<$>) =
-    error "todo"
+    error "todo: Course.Functor (<$>)#instance List"
 
 -- | Maps a function on the Optional functor.
 --
@@ -50,16 +67,24 @@ instance Functor List where
 -- >>> (+1) <$> Full 2
 -- Full 3
 instance Functor Optional where
+  (<$>) ::
+    (a -> b)
+    -> Optional a
+    -> Optional b
   (<$>) =
-    error "todo"
+    error "todo: Course.Functor (<$>)#instance Optional"
 
 -- | Maps a function on the reader ((->) t) functor.
 --
 -- >>> ((+1) <$> (*2)) 8
 -- 17
 instance Functor ((->) t) where
+  (<$>) ::
+    (a -> b)
+    -> ((->) t a)
+    -> ((->) t b)
   (<$>) =
-    error "todo"
+    error "todo: Course.Functor (<$>)#((->) t)"
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -75,7 +100,7 @@ instance Functor ((->) t) where
   -> f b
   -> f a
 (<$) =
-  error "todo"
+  error "todo: Course.Functor#(<$)"
 
 -- | Anonymous map producing unit value.
 --
@@ -95,7 +120,7 @@ void ::
   f a
   -> f ()
 void =
-  error "todo"
+  error "todo: Course.Functor#void"
 
 -----------------------
 -- SUPPORT LIBRARIES --
